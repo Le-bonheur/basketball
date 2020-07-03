@@ -15,7 +15,7 @@ import java.util.List;
  * @date 3/7/2020 09:36
  */
 @Service
-public class ParamDownloadService {
+public class BusinessParamService {
 
 
 }

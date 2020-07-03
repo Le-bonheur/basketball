@@ -1,7 +1,7 @@
 package com.ssc.bkb.config;
 
 import com.ssc.bkb.entity.Basketball;
-import com.ssc.bkb.repository.BasketballRepository;
+import com.ssc.bkb.repository.UserInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,11 +21,11 @@ public class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    public CommandLineRunner initDatabaseB(BasketballRepository repository) {
-        System.out.println("BasketballRepository initial");
+    public CommandLineRunner initDatabaseB(UserInfoRepository repository) {
+        System.out.println("UserInfoRepository initial");
         return args -> {
-            log.info("Preloading " + repository.save(new Basketball("Bilbo Baggins", "burglar")));
-            log.info("Preloading " + repository.save(new Basketball("Frodo Baggins", "thief")));
+            log.info("Preloading " + repository.save(new Basketball("Lebonheur", "Power Forward")));
+            log.info("Preloading " + repository.save(new Basketball("Kobe Bryant", "Shooting guard")));
         };
     }
 }

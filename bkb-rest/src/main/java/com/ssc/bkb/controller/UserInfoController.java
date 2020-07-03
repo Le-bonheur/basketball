@@ -1,8 +1,8 @@
 package com.ssc.bkb.controller;
 
 import com.ssc.bkb.entity.Basketball;
-import com.ssc.bkb.exception.BasketballNotFoundException;
-import com.ssc.bkb.repository.BasketballRepository;
+import com.ssc.bkb.exception.UserInfoNotFoundException;
+import com.ssc.bkb.repository.UserInfoRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
- * BasketballController
+ * 用户Controller
  *
  * @author Lebonheur
  * @date 1/7/2020 15:55
@@ -22,11 +22,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/bkb")
-public class BasketballController {
+public class UserInfoController {
 
-	private final BasketballRepository repository;
+	private final UserInfoRepository repository;
 
-	BasketballController(BasketballRepository repository) {
+	UserInfoController(UserInfoRepository repository) {
 		this.repository = repository;
 	}
 
@@ -35,11 +35,11 @@ public class BasketballController {
 
 		List<EntityModel<Basketball>> basketballs = repository.findAll().stream()
 				.map(basketball -> EntityModel.of(basketball,
-						linkTo(methodOn(BasketballController.class).one(basketball.getUserId())).withSelfRel(),
-						linkTo(methodOn(BasketballController.class).all()).withRel("basketballs")))
+						linkTo(methodOn(UserInfoController.class).one(basketball.getUserId())).withSelfRel(),
+						linkTo(methodOn(UserInfoController.class).all()).withRel("basketballs")))
 				.collect(Collectors.toList());
 
-		return CollectionModel.of(basketballs, linkTo(methodOn(BasketballController.class).all()).withSelfRel());
+		return CollectionModel.of(basketballs, linkTo(methodOn(UserInfoController.class).all()).withSelfRel());
 	}
 
 	@PostMapping
@@ -51,11 +51,11 @@ public class BasketballController {
 	EntityModel<Basketball> one(@PathVariable Long id) {
 
 		Basketball basketball = repository.findById(id)
-				.orElseThrow(() -> new BasketballNotFoundException(id));
+				.orElseThrow(() -> new UserInfoNotFoundException(id));
 
 		return EntityModel.of(basketball,
-				linkTo(methodOn(BasketballController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(BasketballController.class).all()).withRel("basketballs"));
+				linkTo(methodOn(UserInfoController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(UserInfoController.class).all()).withRel("basketballs"));
 	}
 
 	@PutMapping("/{id}")
