@@ -59,12 +59,12 @@ video::p8AdyMlpmPk[youtube]
 
 Let's start off with the simplest thing we can construct. In fact, to make it as simple as possible, we can even leave out the concepts of REST. (Later on, we'll add REST to understand the difference.)
 
-Our example models a simple payroll service that manages the employees of a company. Simply put, you need to store employee objects in an H2 in-memory database, and access them via JPA. This will be wrapped with a Spring MVC layer to access remotely.
+Our example models a simple com.ssc.bkb.payroll service that manages the employees of a company. Simply put, you need to store employee objects in an H2 in-memory database, and access them via JPA. This will be wrapped with a Spring MVC layer to access remotely.
 
-.nonrest/src/main/java/payroll/Employee.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/Employee.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/Employee.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/Employee.java[]
 ----
 
 Despite being small, this Java class contains much:
@@ -78,10 +78,10 @@ Spring Data repositories are interfaces with methods supporting reading, updatin
 
 NOTE: There are multiple repository implementations besides JPA. You can use Spring Data MongoDB, Spring Data GemFire, Spring Data Cassandra, etc. For this tutorial, we'll stick with JPA.
 
-.nonrest/src/main/java/payroll/EmployeeRepository.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeRepository.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/EmployeeRepository.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeRepository.java[]
 ----
 
 This interface extends Spring Data JPA's `JpaRepository`, specifying the domain type as `Employee` and the id type as `Long`. This interface, though empty on the surface, packs a punch given it supports:
@@ -95,10 +95,10 @@ Spring Data's https://docs.spring.io/spring-data/jpa/docs/current/reference/html
 
 Believe it or not, this is enough to launch an application! A Spring Boot application is, at a minimum, a `public static void main` entry-point and the `@SpringBootApplication` annotation. This tells Spring Boot to help out, wherever possible.
 
-.nonrest/src/main/java/payroll/PayrollApplication.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/PayrollApplication.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/PayrollApplication.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/PayrollApplication.java[]
 ----
 
 `@SpringBootApplication` is a meta-annotation that pulls in *component scanning*, *autoconfiguration*, and *property support*. We won't dive
@@ -106,10 +106,10 @@ into the details of Spring Boot in this tutorial, but in essence, it will fire u
 
 Nevertheless, an application with no data isn't very interesting, so let's preload it. The follow class will get loaded automatically by Spring:
 
-.nonrest/src/main/java/payroll/LoadDatabase.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/LoadDatabase.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/LoadDatabase.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/LoadDatabase.java[]
 ----
 
 What happens when it gets loaded?
@@ -123,8 +123,8 @@ Right-click and *Run* `PayRollApplication`, and this is what you get:
 .Fragment of console output showing preloading of data
 ----
 ...
-2018-08-09 11:36:26.169  INFO 74611 --- [main] payroll.LoadDatabase : Preloading Employee(id=1, name=Bilbo Baggins, role=burglar)
-2018-08-09 11:36:26.174  INFO 74611 --- [main] payroll.LoadDatabase : Preloading Employee(id=2, name=Frodo Baggins, role=thief)
+2018-08-09 11:36:26.169  INFO 74611 --- [main] com.ssc.bkb.config.LoadDatabase : Preloading Employee(id=1, name=Bilbo Baggins, role=burglar)
+2018-08-09 11:36:26.174  INFO 74611 --- [main] com.ssc.bkb.config.LoadDatabase : Preloading Employee(id=2, name=Frodo Baggins, role=thief)
 ...
 ----
 
@@ -134,10 +134,10 @@ This isn't the *whole* log, but just the key bits of preloading data. (Indeed, c
 
 To wrap your repository with a web layer, you must turn to Spring MVC. Thanks to Spring Boot, there is little in infrastructure to code. Instead, we can focus on actions:
 
-.nonrest/src/main/java/payroll/EmployeeController.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeController.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/EmployeeController.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[]
 ----
 
 * `@RestController` indicates that the data returned by each method will be written straight into the response body instead of rendering a template.
@@ -145,18 +145,18 @@ include::nonrest/src/main/java/payroll/EmployeeController.java[]
 * We have routes for each operations (`@GetMapping`, `@PostMapping`, `@PutMapping` and `@DeleteMapping`, corresponding to HTTP `GET`, `POST`, `PUT`, and `DELETE` calls). (NOTE: It's useful to read each method and understand what they do.)
 * `EmployeeNotFoundException` is an exception used to indicate when an employee is looked up but not found.
 
-.nonrest/src/main/java/payroll/EmployeeNotFoundException.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeNotFoundException.java
 [source,java,tabsize=2]
 ----
-include::nonrest/src/main/java/payroll/EmployeeNotFoundException.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeNotFoundException.java[]
 ----
 
 When an `EmployeeNotFoundException` is thrown, this extra tidbit of Spring MVC configuration is used to render an *HTTP 404*:
 
-.nonrest/src/main/java/payroll/EmployeeNotFoundAdvice.java
+.nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeNotFoundAdvice.java
 [source,java,tabsize=2,indent=0]
 ----
-include::nonrest/src/main/java/payroll/EmployeeNotFoundAdvice.java[]
+include::nonrest/src/main/java/com.ssc.bkb.payroll/EmployeeNotFoundAdvice.java[]
 ----
 
 * `@ResponseBody` signals that this advice is rendered straight into the response body.
@@ -315,7 +315,7 @@ A critical ingredient to any RESTful service is adding https://tools.ietf.org/ht
 .Getting a single item resource
 [source,java,tabsize=2,indent=0]
 ----
-include::rest/src/main/java/payroll/EmployeeController.java[tag=get-single-item]
+include::rest/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=get-single-item]
 ----
 
 [NOTE]
@@ -377,7 +377,7 @@ To make the aggregate root ALSO more RESTful, you want to include top level link
 .Getting an aggregate root resource
 [source,java,tabsize=2,indent=0]
 ----
-include::rest/src/main/java/payroll/EmployeeController.java[tag=get-aggregate-root]
+include::rest/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=get-aggregate-root]
 ----
 
 Wow! That method, which used to just be `repository.findAll()` has grown big! Let's unpack it.
@@ -453,10 +453,10 @@ link to the aggregate root was shown twice. If that raised your concern, good! T
 Simply put, you need to define a function that converts `Employee` objects to `EntityModel<Employee>` objects. While you could easily
 code this method yourself, there are benefits down the road of implementing Spring HATEOAS's `RepresentationModelAssembler` interface.
 
-.evolution/src/main/java/payroll/EmployeeModelAssembler.java
+.evolution/src/main/java/com.ssc.bkb.payroll/EmployeeModelAssembler.java
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeModelAssembler.java[]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeModelAssembler.java[]
 ----
 
 This simple interface has one method: `toModel()`. It is based on converting a non-model object (`Employee`) into a model-based
@@ -473,7 +473,7 @@ To leverage this assembler, you only have to alter the `EmployeeController` by i
 .Injecting EmployeeModelAssembler into the controller
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=constructor]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=constructor]
 
 	...
 
@@ -485,7 +485,7 @@ From here, you can use it in the single-item employee method:
 .Getting single item resource using the assembler
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=get-single-item]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=get-single-item]
 ----
 
 This code is almost the same, except instead of creating the `EntityModel<Employee>` instance here, you delegate it to the assembler.
@@ -496,7 +496,7 @@ Applying the same thing in the aggregate root controller method is more impressi
 .Getting aggregate root resource using the assembler
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=get-aggregate-root]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=get-aggregate-root]
 ----
 
 The code is, again, almost the same, however you get to replace all that `EntityModel<Employee>` creation logic with `map(assembler::toModel)`.
@@ -576,7 +576,7 @@ How? Simple. Like this:
 .Employee record that handles both "old" and "new" clients
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/Employee.java[]
+include::evolution/src/main/java/com.ssc.bkb.payroll/Employee.java[]
 ----
 
 This class is very similar to the previous version of `Employee`. Let's go over the changes:
@@ -594,7 +594,7 @@ Don't forget to go and change how you preload your database (in `LoadDatabase`) 
 
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/LoadDatabase.java[tag=new_constructor]
+include::evolution/src/main/java/com.ssc.bkb.payroll/LoadDatabase.java[tag=new_constructor]
 ----
 ====
 
@@ -605,7 +605,7 @@ Another step in the right direction involves ensuring that each of your REST met
 .POST that handles "old" and "new" client requests
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=post]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=post]
 ----
 
 * The new `Employee` object is saved as before. But the resulting object is wrapped using the `EmployeeModelAssembler`.
@@ -658,7 +658,7 @@ The PUT controller method needs similar tweaks:
 .Handling a PUT for different clients
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=put]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=put]
 ----
 
 The `Employee` object built from the `save()` operation is then wrapped using the `EmployeeModelAssembler` into an `EntityModel<Employee>` object. Using the `getRequiredLink()` method, you can retrieve the `Link` created by the `EmployeeModelAssembler` with a `SELF` rel.  This method returns a `Link` which must be turned into a `URI` with the `toUri` method.
@@ -706,7 +706,7 @@ That employee resource has now been updated and the location URI sent back. Fina
 .Handling DELETE requests
 [source,java,tabsize=2,indent=0]
 ----
-include::evolution/src/main/java/payroll/EmployeeController.java[tag=delete]
+include::evolution/src/main/java/com.ssc.bkb.payroll/EmployeeController.java[tag=delete]
 ----
 
 This returns an *HTTP 204 No Content* response.
@@ -747,10 +747,10 @@ To show how to cope with state changes without triggering breaking changes in cl
 
 As a first step, define an `Order` record:
 
-.links/src/main/java/payroll/Order.java
+.links/src/main/java/com.ssc.bkb.payroll/Order.java
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/Order.java[]
+include::links/src/main/java/com.ssc.bkb.payroll/Order.java[]
 ----
 
 * The class requires a JPA `@Table` annotation changing the table's name to `CUSTOMER_ORDER` because `ORDER` is not a valid name for table.
@@ -759,10 +759,10 @@ include::links/src/main/java/payroll/Order.java[]
 Orders must go through a certain series of state transitions from the time a customer submits an order and it is either
 fulfilled or cancelled. This can be captured as a Java `enum`:
 
-.links/src/main/java/payroll/Status.java
+.links/src/main/java/com.ssc.bkb.payroll/Status.java
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/Status.java[]
+include::links/src/main/java/com.ssc.bkb.payroll/Status.java[]
 ----
 
 This `enum` captures the various states an `Order` can occupy. For this tutorial, let's keep it simple.
@@ -778,10 +778,10 @@ interface OrderRepository extends JpaRepository<Order, Long> {
 
 With this in place, you can now define a basic `OrderController`:
 
-.links/src/main/java/payroll/OrderController.java
+.links/src/main/java/com.ssc.bkb.payroll/OrderController.java
 [source,java,tabsize=2]
 ----
-include::links/src/main/java/payroll/OrderController.java[tag=main]
+include::links/src/main/java/com.ssc.bkb.payroll/OrderController.java[tag=main]
 }
 ----
 
@@ -812,10 +812,10 @@ out of sync on the logic of state transitions.
 Having already embraced the concept of Spring HATEOAS `RepresentationModelAssembler` components, putting such logic in the `OrderModelAssembler`
 would be the perfect place to capture this business rule:
 
-.links/src/main/java/payroll/OrderModelAssembler.java
+.links/src/main/java/com.ssc.bkb.payroll/OrderModelAssembler.java
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/OrderModelAssembler.java[]
+include::links/src/main/java/com.ssc.bkb.payroll/OrderModelAssembler.java[]
 ----
 
 This resource assembler always includes the *self* link to the single-item resource as well as a link back to the aggregate root.
@@ -831,7 +831,7 @@ To round out order fulfillment, add the following to the `OrderController` for t
 .Creating a "cancel" operation in the OrderController
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/OrderController.java[tag=delete]
+include::links/src/main/java/com.ssc.bkb.payroll/OrderController.java[tag=delete]
 ----
 
 It checks the `Order` status before allowing it to be cancelled. If it's not a valid state, it returns an https://tools.ietf.org/html/rfc7807[RFC-7807] `Problem`,
@@ -842,7 +842,7 @@ And add this to the `OrderController` as well for order completion:
 .Creating a "complete" operation in the OrderController
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/OrderController.java[tag=complete]
+include::links/src/main/java/com.ssc.bkb.payroll/OrderController.java[tag=complete]
 ----
 
 This implements similar logic to prevent an `Order` status from being completed unless in the proper state.
@@ -854,7 +854,7 @@ Let's update `LoadDatabase` to pre-load some `Order`&#8203;s along with the `Emp
 .Updating the database pre-loader
 [source,java,tabsize=2,indent=0]
 ----
-include::links/src/main/java/payroll/LoadDatabase.java[]
+include::links/src/main/java/com.ssc.bkb.payroll/LoadDatabase.java[]
 ----
 
 Now you can test things out!

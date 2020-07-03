@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssc.bkb.repository.BasketballRepository">
+
+    <update id="updateUserInfoByOpenId" parameterType="com.ssc.bkb.entity.UserInfo">
+        UPDATE bkb.user_info
+           SET nick_name = #{nickName},
+               avatar_url = #{avatarUrl},
+               gender = #{gender},
+               language = #{language},
+               country = #{country},
+               province = #{province},
+               city = #{city},
+               version = #{version} + 1,
+               update_time = CURRENT_TIMESTAMP
+         WHERE open_id = #{openId}
+           AND version = #{version}
+    </update>
+
+</mapper>

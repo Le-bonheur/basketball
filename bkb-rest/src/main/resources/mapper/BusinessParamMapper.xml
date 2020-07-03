@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssc.bkb.repository.BusinessParamRepository">
+  <resultMap id="BaseResultMap" type="com.ssc.bkb.entity.BusinessParam">
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="param_code" jdbcType="VARCHAR" property="paramCode" />
+    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+    <result column="manage_user" jdbcType="VARCHAR" property="manageUser" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+
+
+
+  <insert id="insert" parameterType="com.ssc.bkb.entity.BusinessParam">
+    insert into bkb.business_param (param_type, param_code, param_value,
+      manage_user, create_time, update_time
+      )
+    values (#{paramType,jdbcType=VARCHAR}, #{paramCode,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR}, 
+      #{manageUser,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ssc.bkb.entity.BusinessParam">
+    insert into bkb.business_param
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paramType != null">
+        param_type,
+      </if>
+      <if test="paramCode != null">
+        param_code,
+      </if>
+      <if test="paramValue != null">
+        param_value,
+      </if>
+      <if test="manageUser != null">
+        manage_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paramType != null">
+        #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramCode != null">
+        #{paramCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="manageUser != null">
+        #{manageUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getParamList" resultType="com.ssc.bkb.entity.BusinessParam">
+    SELECT * FROM bkb.business_param;
+  </select>
+</mapper>
