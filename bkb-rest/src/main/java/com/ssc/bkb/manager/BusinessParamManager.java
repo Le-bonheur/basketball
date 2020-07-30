@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ssc.bkb.entity.BusinessParam;
 import com.ssc.bkb.repository.BusinessParamRepository;
-import com.ssc.bkb.task.LoadParamTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +29,7 @@ public class BusinessParamManager {
     /**
      * 参数映射表，key1=参数类型，key2=参数码，key3=参数值
      */
-    private final Map<String, Map<String, List<BusinessParam>>> params = new HashMap<>();
+    private static Map<String, Map<String, List<BusinessParam>>> params = new HashMap<>();
 
     private BusinessParamRepository businessParamRepository;
 
@@ -45,13 +43,15 @@ public class BusinessParamManager {
     /**
      * 刷新所有参数
      */
-    public void downloadParams() {
+    public void loadParams() {
+        log.debug("开始加载参数...");
+
         List<BusinessParam> paramList = businessParamRepository.getParamList();
-        Map<String, Map<String, List<BusinessParam>>> params = paramList.stream().collect(
+        BusinessParamManager.params = paramList.stream().collect(
                 Collectors.groupingBy(BusinessParam::getParamType,
                         Collectors.groupingBy(BusinessParam::getParamCode))
         );
-        this.params.putAll(params);
+
         log.debug(paramList.size() + "条参数加载完成！");
     }
 
@@ -62,7 +62,7 @@ public class BusinessParamManager {
      * @return 参数码Map
      */
     public Map<String, List<BusinessParam>> getParamCodeMap(String paramType) {
-        return this.params.getOrDefault(paramType, Maps.newHashMap());
+        return BusinessParamManager.params.getOrDefault(paramType, Maps.newHashMap());
     }
 
     /**
@@ -73,7 +73,7 @@ public class BusinessParamManager {
      * @return 参数值List
      */
     public List<BusinessParam> getParamValueList(String paramType, String paramCode) {
-        return this.params.getOrDefault(paramType, Maps.newHashMap())
+        return BusinessParamManager.params.getOrDefault(paramType, Maps.newHashMap())
                 .getOrDefault(paramCode, Lists.newArrayList());
     }
 
@@ -84,7 +84,7 @@ public class BusinessParamManager {
      * @return 是否存在
      */
     public boolean hasParamType(String paramType) {
-        return this.params.containsKey(paramType);
+        return BusinessParamManager.params.containsKey(paramType);
     }
 
     /**
@@ -95,7 +95,7 @@ public class BusinessParamManager {
      * @return 是否存在
      */
     public boolean hasParamTypeAndCode(String paramType, String paramCode) {
-        return hasParamType(paramType) && this.params.get(paramType).containsKey(paramCode);
+        return hasParamType(paramType) && BusinessParamManager.params.get(paramType).containsKey(paramCode);
     }
 
 }

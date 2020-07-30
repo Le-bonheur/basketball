@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ParamConfig {
 
-    @Bean(initMethod = "downloadParams")
-    public BusinessParamManager paramConfig() {
-        return new BusinessParamManager();
-    }
+//    @Bean(initMethod = "downloadParams")
+//    public BusinessParamManager paramsConfig() {
+//        return new BusinessParamManager();
+//    }
 
 }

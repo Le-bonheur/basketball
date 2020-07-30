@@ -30,7 +30,7 @@ public class LoadParamTask {
     @Scheduled(cron = "0 0 1 * * ?")
     public void downloadParams() {
         log.debug("开始刷新参数");
-        businessParamManager.downloadParams();
+        businessParamManager.loadParams();
         log.debug("刷新参数完成");
     }
 

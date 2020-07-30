@@ -18,6 +18,11 @@ import java.util.List;
 @Repository
 public interface BusinessParamRepository {
 
+    /**
+     * 获取参数列表
+     *
+     * @return 参数列表
+     */
     List<BusinessParam> getParamList();
 
     int insert(BusinessParam record);

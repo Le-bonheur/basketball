@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssc.bkb.repository.BackgroundEventRepository">
+    <resultMap id="BaseResultMap" type="com.ssc.bkb.entity.BackgroundEvent">
+        <id column="event_id" jdbcType="INTEGER" property="eventId" />
+        <result column="event_type" jdbcType="VARCHAR" property="eventType" />
+        <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        event_id, event_type, create_user, create_time
+    </sql>
+    <select id="getEventList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from background_event limit 1000
+    </select>
+    <delete id="deleteById" parameterType="java.util.List">
+        delete from background_event
+        where event_id in
+        <foreach collection="list" item="record" open="(" close=")" separator=",">
+            #{record}
+        </foreach>
+    </delete>
+    <insert id="insert" keyColumn="event_id" keyProperty="eventId"
+            parameterType="com.ssc.bkb.entity.BackgroundEvent" useGeneratedKeys="true">
+        insert into background_event (event_type, create_user, create_time
+        )
+        values (#{eventType,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}
+               )
+    </insert>
+
+    <insert id="insertToBak" keyColumn="event_id" keyProperty="eventId"
+            parameterType="java.util.List" useGeneratedKeys="false">
+        insert into background_event_bak (event_id, event_type, create_user, create_time
+        )
+        values
+            <foreach collection="list" separator="," item="event">
+                (#{event.eventId,jdbcType=INTEGER},
+                 #{event.eventType,jdbcType=VARCHAR},
+                 #{event.createUser,jdbcType=VARCHAR},
+                 #{event.createTime,jdbcType=DATE})
+            </foreach>
+    </insert>
+</mapper>

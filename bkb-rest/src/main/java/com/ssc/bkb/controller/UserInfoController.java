@@ -1,6 +1,6 @@
 package com.ssc.bkb.controller;
 
-import com.ssc.bkb.entity.Basketball;
+import com.ssc.bkb.entity.UserInfo;
 import com.ssc.bkb.exception.UserInfoNotFoundException;
 import com.ssc.bkb.repository.UserInfoRepository;
 import org.springframework.hateoas.CollectionModel;
@@ -31,50 +31,50 @@ public class UserInfoController {
 	}
 
 	@GetMapping
-	CollectionModel<EntityModel<Basketball>> all() {
+	CollectionModel<EntityModel<UserInfo>> all() {
 
-		List<EntityModel<Basketball>> basketballs = repository.findAll().stream()
-				.map(basketball -> EntityModel.of(basketball,
-						linkTo(methodOn(UserInfoController.class).one(basketball.getUserId())).withSelfRel(),
-						linkTo(methodOn(UserInfoController.class).all()).withRel("basketballs")))
+		List<EntityModel<UserInfo>> userInfos = repository.getAllUser().stream()
+				.map(userInfo -> EntityModel.of(userInfo,
+						linkTo(methodOn(UserInfoController.class).one(userInfo.getUserId())).withSelfRel(),
+						linkTo(methodOn(UserInfoController.class).all()).withRel("userInfos")))
 				.collect(Collectors.toList());
 
-		return CollectionModel.of(basketballs, linkTo(methodOn(UserInfoController.class).all()).withSelfRel());
+		return CollectionModel.of(userInfos, linkTo(methodOn(UserInfoController.class).all()).withSelfRel());
 	}
 
 	@PostMapping
-	Basketball newBasketball(@RequestBody Basketball newBasketball) {
-		return repository.save(newBasketball);
+	int newUserInfo(@RequestBody UserInfo newUserInfo) {
+		return repository.insertSelective(newUserInfo);
 	}
 
 	@GetMapping("/{id}")
-	EntityModel<Basketball> one(@PathVariable Long id) {
+	EntityModel<UserInfo> one(@PathVariable Integer id) {
 
-		Basketball basketball = repository.findById(id)
+		UserInfo userInfo = repository.selectByPrimaryKey(id)
 				.orElseThrow(() -> new UserInfoNotFoundException(id));
 
-		return EntityModel.of(basketball,
+		return EntityModel.of(userInfo,
 				linkTo(methodOn(UserInfoController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(UserInfoController.class).all()).withRel("basketballs"));
+				linkTo(methodOn(UserInfoController.class).all()).withRel("userInfos"));
 	}
 
 	@PutMapping("/{id}")
-	Basketball replaceBasketball(@RequestBody Basketball newBasketball, @PathVariable Long id) {
+	int replaceUserInfo(@RequestBody UserInfo newUserInfo, @PathVariable Integer id) {
 
-		return repository.findById(id)
-				.map(basketball -> {
-					basketball.setName(newBasketball.getName());
-					basketball.setRole(newBasketball.getRole());
-					return repository.save(basketball);
+		return repository.selectByPrimaryKey(id)
+				.map(userInfo -> {
+					userInfo.setCity(newUserInfo.getCity());
+					userInfo.setCountry(newUserInfo.getCountry());
+					return repository.insertSelective(userInfo);
 				})
 				.orElseGet(() -> {
-					newBasketball.setUserId(id);
-					return repository.save(newBasketball);
+					newUserInfo.setUserId(id);
+					return repository.insertSelective(newUserInfo);
 				});
 	}
 
 	@DeleteMapping("/{id}")
-	void deleteBasketball(@PathVariable Long id) {
-		repository.deleteById(id);
+	void deleteUserInfo(@PathVariable Integer id) {
+		repository.deleteByPrimaryKey(id);
 	}
 }

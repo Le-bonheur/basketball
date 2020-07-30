@@ -10,8 +10,6 @@
     <result column="update_time" jdbcType="DATE" property="updateTime" />
   </resultMap>
 
-
-
   <insert id="insert" parameterType="com.ssc.bkb.entity.BusinessParam">
     insert into bkb.business_param (param_type, param_code, param_value,
       manage_user, create_time, update_time
@@ -35,12 +33,8 @@
       <if test="manageUser != null">
         manage_user,
       </if>
-      <if test="createTime != null">
         create_time,
-      </if>
-      <if test="updateTime != null">
         update_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="paramType != null">
@@ -55,16 +49,12 @@
       <if test="manageUser != null">
         #{manageUser,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=DATE},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=DATE},
-      </if>
+        CURRENT_TIMESTAMP
+        CURRENT_TIMESTAMP
     </trim>
   </insert>
 
-  <select id="getParamList" resultType="com.ssc.bkb.entity.BusinessParam">
+  <select id="getParamList" resultMap="BaseResultMap">
     SELECT * FROM bkb.business_param;
   </select>
 </mapper>

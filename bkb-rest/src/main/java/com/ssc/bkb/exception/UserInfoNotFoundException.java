@@ -2,7 +2,7 @@ package com.ssc.bkb.exception;
 
 public class UserInfoNotFoundException extends RuntimeException {
 
-	public UserInfoNotFoundException(Long id) {
+	public UserInfoNotFoundException(int id) {
 		super("Could not find user " + id);
 	}
 }

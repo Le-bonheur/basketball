@@ -2,6 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ssc.bkb.repository.UserInfoRepository">
 
+    <resultMap id="BaseResultMap" type="com.ssc.bkb.entity.UserInfo">
+        <id column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="open_id" jdbcType="VARCHAR" property="openId" />
+        <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+        <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+        <result column="gender" jdbcType="INTEGER" property="gender" />
+        <result column="language" jdbcType="VARCHAR" property="language" />
+        <result column="country" jdbcType="VARCHAR" property="country" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="version" jdbcType="INTEGER" property="version" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="update_time" jdbcType="DATE" property="updateTime" />
+    </resultMap>
+    
     <update id="updateUserInfoByOpenId" parameterType="com.ssc.bkb.entity.UserInfo">
         UPDATE bkb.user_info
            SET nick_name = #{nickName},
@@ -17,4 +33,170 @@
            AND version = #{version}
     </update>
 
+    <sql id="Base_Column_List">
+        user_id, open_id, union_id, nick_name, avatar_url, gender, `language`, country, province, 
+    city, version, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user_info
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getAllUser" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from user_info
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_info
+        where user_id = #{userId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="com.ssc.bkb.entity.UserInfo" useGeneratedKeys="true">
+        insert into user_info (open_id, union_id, nick_name,
+                               avatar_url, gender, `language`,
+                               country, province, city,
+                               version, create_time, update_time
+        )
+        values (#{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
+                #{avatarUrl,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{language,jdbcType=VARCHAR},
+                #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+                #{version,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}
+               )
+    </insert>
+    <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="com.ssc.bkb.entity.UserInfo" useGeneratedKeys="true">
+        insert into user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="openId != null">
+                open_id,
+            </if>
+            <if test="unionId != null">
+                union_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="language != null">
+                `language`,
+            </if>
+            <if test="country != null">
+                country,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="openId != null">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="unionId != null">
+                #{unionId,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="avatarUrl != null">
+                #{avatarUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="language != null">
+                #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=DATE},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ssc.bkb.entity.UserInfo">
+        update user_info
+        <set>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="unionId != null">
+                union_id = #{unionId,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=INTEGER},
+            </if>
+            <if test="language != null">
+                `language` = #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                country = #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=DATE},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ssc.bkb.entity.UserInfo">
+        update user_info
+        set open_id = #{openId,jdbcType=VARCHAR},
+            union_id = #{unionId,jdbcType=VARCHAR},
+            nick_name = #{nickName,jdbcType=VARCHAR},
+            avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+            gender = #{gender,jdbcType=INTEGER},
+            `language` = #{language,jdbcType=VARCHAR},
+            country = #{country,jdbcType=VARCHAR},
+            province = #{province,jdbcType=VARCHAR},
+            city = #{city,jdbcType=VARCHAR},
+            version = #{version,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=DATE},
+            update_time = #{updateTime,jdbcType=DATE}
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
 </mapper>

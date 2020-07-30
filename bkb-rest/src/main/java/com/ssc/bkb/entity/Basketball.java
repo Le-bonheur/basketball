@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.Objects;
 
 /**
@@ -15,14 +12,13 @@ import java.util.Objects;
  * date: 1/7/2020 10:33
  * description: Basketball
  */
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Basketball {
 
-	private @Id @GeneratedValue Long userId;
+	private Long userId;
 	private String name;
 	private String role;
 
