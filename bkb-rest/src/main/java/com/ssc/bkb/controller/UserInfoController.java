@@ -24,16 +24,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/bkb")
 public class UserInfoController {
 
-	private final UserInfoRepository repository;
+	private final UserInfoRepository userInfoRepository;
 
-	UserInfoController(UserInfoRepository repository) {
-		this.repository = repository;
+	UserInfoController(UserInfoRepository userInfoRepository) {
+		this.userInfoRepository = userInfoRepository;
 	}
 
 	@GetMapping
 	CollectionModel<EntityModel<UserInfo>> all() {
 
-		List<EntityModel<UserInfo>> userInfos = repository.getAllUser().stream()
+		List<EntityModel<UserInfo>> userInfos = userInfoRepository.getAllUser().stream()
 				.map(userInfo -> EntityModel.of(userInfo,
 						linkTo(methodOn(UserInfoController.class).one(userInfo.getUserId())).withSelfRel(),
 						linkTo(methodOn(UserInfoController.class).all()).withRel("userInfos")))
@@ -44,13 +44,13 @@ public class UserInfoController {
 
 	@PostMapping
 	int newUserInfo(@RequestBody UserInfo newUserInfo) {
-		return repository.insertSelective(newUserInfo);
+		return userInfoRepository.insertSelective(newUserInfo);
 	}
 
 	@GetMapping("/{id}")
 	EntityModel<UserInfo> one(@PathVariable Integer id) {
 
-		UserInfo userInfo = repository.selectByPrimaryKey(id)
+		UserInfo userInfo = userInfoRepository.selectByPrimaryKey(id)
 				.orElseThrow(() -> new UserInfoNotFoundException(id));
 
 		return EntityModel.of(userInfo,
@@ -58,23 +58,23 @@ public class UserInfoController {
 				linkTo(methodOn(UserInfoController.class).all()).withRel("userInfos"));
 	}
 
-	@PutMapping("/{id}")
-	int replaceUserInfo(@RequestBody UserInfo newUserInfo, @PathVariable Integer id) {
+	@PutMapping("/{openId}")
+	int replaceUserInfo(@RequestBody UserInfo newUserInfo, @PathVariable String openId) {
 
-		return repository.selectByPrimaryKey(id)
+		return userInfoRepository.selectByOpenId(openId)
 				.map(userInfo -> {
 					userInfo.setCity(newUserInfo.getCity());
 					userInfo.setCountry(newUserInfo.getCountry());
-					return repository.insertSelective(userInfo);
+					return userInfoRepository.insertSelective(userInfo);
 				})
 				.orElseGet(() -> {
-					newUserInfo.setUserId(id);
-					return repository.insertSelective(newUserInfo);
+					newUserInfo.setOpenId(openId);
+					return userInfoRepository.insertSelective(newUserInfo);
 				});
 	}
 
 	@DeleteMapping("/{id}")
 	void deleteUserInfo(@PathVariable Integer id) {
-		repository.deleteByPrimaryKey(id);
+		userInfoRepository.deleteByPrimaryKey(id);
 	}
 }

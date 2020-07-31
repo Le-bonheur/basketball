@@ -27,6 +27,8 @@ public interface UserInfoRepository {
 
     Optional<UserInfo> selectByPrimaryKey(Integer userId);
 
+    Optional<UserInfo> selectByOpenId(String openId);
+
     int updateByPrimaryKeySelective(UserInfo record);
 
     int updateByPrimaryKey(UserInfo record);

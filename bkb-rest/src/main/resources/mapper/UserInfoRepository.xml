@@ -43,6 +43,12 @@
         from user_info
         where user_id = #{userId,jdbcType=INTEGER}
     </select>
+    <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user_info
+        where open_id = #{openId}
+    </select>
     <select id="getAllUser" resultMap="BaseResultMap">
         select <include refid="Base_Column_List" /> from user_info
     </select>

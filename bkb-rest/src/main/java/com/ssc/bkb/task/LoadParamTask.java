@@ -27,7 +27,7 @@ public class LoadParamTask {
         this.businessParamManager = businessParamManager;
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(fixedRate = 3600000)
     public void downloadParams() {
         log.debug("开始刷新参数");
         businessParamManager.loadParams();
